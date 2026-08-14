@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
@@ -9,20 +10,50 @@ from sympy import symbols, sign, count_ops
 from . import geometry, stats
 from table_generation import schemes 
 
+# For loading/saving tables to disk
+import pickle
+CACHE_DIR = "cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
+
+
+def load_or_compute(name, compute_fn):
+    path = os.path.join(CACHE_DIR, f"{name}.pkl")
+
+    if os.path.exists(path):
+        print(f"Loading {name} from cache...")
+        with open(path, "rb") as f:
+            return pickle.load(f)
+
+    print(f"Computing {name}...")
+    result = compute_fn()
+
+    with open(path, "wb") as f:
+        pickle.dump(result, f)
+
+    return result
+
 # Evaluate the table for a given scheme with concrete numbers to output +-
 def evaluateTable(pExpressions, pl, pi, pv, pj, pu, pk, pl_c, pi_c, pv_c, pj_c, pu_c, pk_c):
 
     subs_dict = {
-            pl[0]: pl_c[0], pl[1]: pl_c[1],
-            pi[0]: pi_c[0], pi[1]: pi_c[1],
-            pv[0]: pv_c[0], pv[1]: pv_c[1],
-            pj[0]: pj_c[0], pj[1]: pj_c[1],
-            pu[0]: pu_c[0], pu[1]: pu_c[1],
-            pk[0]: pk_c[0], pk[1]: pk_c[1],
-            }
+        pl[0]: pl_c[0], pl[1]: pl_c[1],
+        pi[0]: pi_c[0], pi[1]: pi_c[1],
+        pv[0]: pv_c[0], pv[1]: pv_c[1],
+        pj[0]: pj_c[0], pj[1]: pj_c[1],
+        pu[0]: pu_c[0], pu[1]: pu_c[1],
+        pk[0]: pk_c[0], pk[1]: pk_c[1],
+    }
 
     for i, pExpression in enumerate(pExpressions):
         expressionSign = sign(pExpression.subs(subs_dict).evalf())
+
+        # print(f"The expression is {pExpression.subs(subs_dict).evalf()}")
+        # print(sign)
+        # print(type(sign))
+        # print(expressionSign)
+
+        expr = pExpression.subs(subs_dict)
+        expr_eval = expr.evalf()
 
         if (expressionSign != 0):
             return expressionSign, i
@@ -34,7 +65,7 @@ def evaluate_iteration(iteration):
     # print(f"---------------------------------------------------------- At iteration {iteration}")
     # start = time.time()
 
-    pl_c, pi_c, pv_c, pj_c, pu_c, pk_c = geometry.generateSegments((1, 1000))
+    pl_c, pi_c, pv_c, pj_c, pu_c, pk_c = geometry.generateSegmentsNewCase14((1, 10000))
 
     signYapL, depthYapL = evaluateTable(pExpressionsYapLex, pl, pi, pv, pj, pu, pk, pl_c, pi_c, pv_c, pj_c, pu_c, pk_c)
     signYapT, depthYapT = evaluateTable(pExpressionsYapTotal, pl, pi, pv, pj, pu, pk, pl_c, pi_c, pv_c, pj_c, pu_c, pk_c)
@@ -51,9 +82,6 @@ def evaluate_iteration(iteration):
         "signSoS": signSoS,
         "depthSoS": depthSoS
     }
-
-
-
 
 if len(sys.argv) != 2:
     print("Usage: python your_script.py <num_iterations>")
@@ -75,14 +103,35 @@ pu = symbols("pu1, pu2")
 pk = symbols("pk1, pk2")
 
 # Compute the evaluation tables for each scheme
-print("Computing tables for Yap Lex...")
-pExpressionsYapLex, eExpressionsYapLex = schemes.getEvaluationTableSegmentOrderYap(pl, pi, pv, pj, pu, pk, "lex")
+# print("Computing tables for Yap Lex...")
+# pExpressionsYapLex, eExpressionsYapLex = schemes.getEvaluationTableSegmentOrderYap(pl, pi, pv, pj, pu, pk, "lex")
 
-print("Computing tables for Yap Total...")
-pExpressionsYapTotal, eExpressionsYapTotal = schemes.getEvaluationTableSegmentOrderYap(pl, pi, pv, pj, pu, pk, "total")
+# print("Computing tables for Yap Total...")
+# pExpressionsYapTotal, eExpressionsYapTotal = schemes.getEvaluationTableSegmentOrderYap(pl, pi, pv, pj, pu, pk, "total")
 
-print("Computing tables for SoS...")
-pExpressionsSoS, eExpressionsSoS = schemes.getEvaluationTableSegmentOrderSoS(pl, pi, pv, pj, pu, pk)
+# print("Computing tables for SoS...")
+# pExpressionsSoS, eExpressionsSoS = schemes.getEvaluationTableSegmentOrderSoS(pl, pi, pv, pj, pu, pk)
+
+pExpressionsYapLex, eExpressionsYapLex = load_or_compute(
+    "segment_order_yap_lex",
+    lambda: schemes.getEvaluationTableSegmentOrderYap(
+        pl, pi, pv, pj, pu, pk, "lex"
+    ),
+)
+
+pExpressionsYapTotal, eExpressionsYapTotal = load_or_compute(
+    "segment_order_yap_total",
+    lambda: schemes.getEvaluationTableSegmentOrderYap(
+        pl, pi, pv, pj, pu, pk, "total"
+    ),
+)
+
+pExpressionsSoS, eExpressionsSoS = load_or_compute(
+    "segment_order_sos",
+    lambda: schemes.getEvaluationTableSegmentOrderSoS(
+        pl, pi, pv, pj, pu, pk
+    ),
+)
 
 # Compute number of arithemtic operations for each row of the evaluation table for each scheme
 operationCountYapLex = [count_ops(p) for p in pExpressionsYapLex]
@@ -115,17 +164,17 @@ with ProcessPoolExecutor() as executor:
 for r in results:
     signsYapL.append(r["signYapL"])
     depthsYapL.append(r["depthYapL"])
-    operationsYapL.append(sum(operationCountYapLex[:r["depthYapL"]]))
+    operationsYapL.append(sum(operationCountYapLex[:r["depthYapL"]+1]))
     depthsHistogramYapL[r["depthYapL"]] += 1
 
     signsYapT.append(r["signYapT"])
     depthsYapT.append(r["depthYapT"])
-    operationsYapT.append(sum(operationCountYapTotal[:r["depthYapT"]]))
+    operationsYapT.append(sum(operationCountYapTotal[:r["depthYapT"]+1]))
     depthsHistogramYapT[r["depthYapT"]] += 1
 
     signsSoS.append(r["signSoS"])
     depthsSoS.append(r["depthSoS"])
-    operationsSoS.append(sum(operationCountSoS[:r["depthSoS"]]))
+    operationsSoS.append(sum(operationCountSoS[:r["depthSoS"]+1]))
     depthsHistogramSoS[r["depthSoS"]] += 1
 
 end = time.time()
