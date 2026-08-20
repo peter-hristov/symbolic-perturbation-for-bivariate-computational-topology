@@ -189,28 +189,21 @@ with ProcessPoolExecutor() as executor:
         desc="Evaluating segment triples"
     ))
 
-# for (pl_f, pi_f), (pv_f, pj_f), (pu_f, pk_f) in tqdm(
-    # segment_triples,
-    # desc="Evaluating segment triples"
-# ):
+for r in results:
+    signsYapL.append(r["signYapL"])
+    depthsYapL.append(r["depthYapL"])
+    operationsYapL.append(sum(operationCountYapLex[:r["depthYapL"] + 1]))
+    depthsHistogramYapL[r["depthYapL"]] += 1
 
-    # r = evaluate_iteration(pl, pi, pv, pj, pu, pk, pl_f, pi_f, pv_f, pj_f, pu_f, pk_f, pExpressionsYapLex, pExpressionsYapTotal, pExpressionsSoS)
-    # results.append(r)
+    signsYapT.append(r["signYapT"])
+    depthsYapT.append(r["depthYapT"])
+    operationsYapT.append(sum(operationCountYapTotal[:r["depthYapT"] + 1]))
+    depthsHistogramYapT[r["depthYapT"]] += 1
 
-    # signsYapL.append(r["signYapL"])
-    # depthsYapL.append(r["depthYapL"])
-    # operationsYapL.append(sum(operationCountYapLex[:r["depthYapL"]+1]))
-    # depthsHistogramYapL[r["depthYapL"]] += 1
-
-    # signsYapT.append(r["signYapT"])
-    # depthsYapT.append(r["depthYapT"])
-    # operationsYapT.append(sum(operationCountYapTotal[:r["depthYapT"]+1]))
-    # depthsHistogramYapT[r["depthYapT"]] += 1
-
-    # signsSoS.append(r["signSoS"])
-    # depthsSoS.append(r["depthSoS"])
-    # operationsSoS.append(sum(operationCountSoS[:r["depthSoS"]+1]))
-    # depthsHistogramSoS[r["depthSoS"]] += 1
+    signsSoS.append(r["signSoS"])
+    depthsSoS.append(r["depthSoS"])
+    operationsSoS.append(sum(operationCountSoS[:r["depthSoS"] + 1]))
+    depthsHistogramSoS[r["depthSoS"]] += 1
 
 # Output stats over all tests
 print("\n\n------------------------------------------------------------------- Yap Lex")
