@@ -101,6 +101,19 @@ def evaluateExpression(expression, p, variables, indexSubstitution, p1, p2, p3, 
     return expression_value_subs
 
 
+def randomize_pairs(a, b, c, d, e, f):
+
+    pairs = [random.sample([a, b], 2),
+             random.sample([c, d], 2),
+             random.sample([e, f], 2)]
+
+    # pairs = [[a, b], [c, d], [e, f]]
+
+    random.shuffle(pairs)
+
+    return [x for pair in pairs for x in pair]
+
+
 # Generic Case 1.
 # Three segments with generic intersections
 
@@ -145,7 +158,7 @@ def generateSegmentsNewCase1(randomRange):
     # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pv, pj, pu, pk
+    return randomize_pairs(pl, pi, pv, pj, pu, pk)
 
 
 # Degenerate Case 2.
@@ -191,7 +204,7 @@ def generateSegmentsNewCase2(randomRange):
     # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pv, pj, pu, pk
+    return randomize_pairs(pl, pi, pv, pj, pu, pk)
 
 
 # Case 3
@@ -217,25 +230,22 @@ def generateSegmentsNewCase3(randomRange):
     pu = transform_point(pu, centerOffsetX, centerOffsetY, randomRange)
     pk = transform_point(pk, centerOffsetX, centerOffsetY, randomRange)
 
-    print("What are the types we need?2")
-    print(type(pl[0]))
-    print(type(pl[1]))
-    print(type(pi[0]))
-    print(type(pi[1]))
-    # print(type(pv[0]))
-    # print(type(pv[1]))
-    # print(type(pj[0]))
-    # print(type(pj[1]))
-    print(type(pu[0]))
-    print(type(pu[1]))
-    print(type(pk[0]))
-    print(type(pk[1]))
-    print("\n\n")
+    # print("What are the types we need?2")
+    # print(type(pl[0]))
+    # print(type(pl[1]))
+    # print(type(pi[0]))
+    # print(type(pi[1]))
+    # # print(type(pv[0]))
+    # # print(type(pv[1]))
+    # # print(type(pj[0]))
+    # # print(type(pj[1]))
+    # print(type(pu[0]))
+    # print(type(pu[1]))
+    # print(type(pk[0]))
+    # print(type(pk[1]))
+    # print("\n\n")
 
-
-
-    return pl, pi, pl, pi, pu, pk
-
+    return randomize_pairs(pl, pi, pl, pi, pu, pk)
 
 
 # Three overlapping
@@ -253,26 +263,23 @@ def generateSegmentsNewCase4(randomRange):
     # Transform all points
     pl = transform_point(pl, centerOffsetX, centerOffsetY, randomRange)
     pi = transform_point(pi, centerOffsetX, centerOffsetY, randomRange)
-    print("What are the types we need?2")
-    print(type(pl[0]))
-    print(type(pl[1]))
-    print(type(pi[0]))
-    print(type(pi[1]))
-    # print(type(pv[0]))
-    # print(type(pv[1]))
-    # print(type(pj[0]))
-    # print(type(pj[1]))
-    # print(type(pu[0]))
-    # print(type(pu[1]))
-    # print(type(pk[0]))
-    # print(type(pk[1]))
-    print("\n\n")
 
+    # print("What are the types we need?2")
+    # print(type(pl[0]))
+    # print(type(pl[1]))
+    # print(type(pi[0]))
+    # print(type(pi[1]))
+    # # print(type(pv[0]))
+    # # print(type(pv[1]))
+    # # print(type(pj[0]))
+    # # print(type(pj[1]))
+    # # print(type(pu[0]))
+    # # print(type(pu[1]))
+    # # print(type(pk[0]))
+    # # print(type(pk[1]))
+    # print("\n\n")
 
-
-    return pl, pi, pl, pi, pl, pi
-
-
+    return randomize_pairs(pl, pi, pl, pi, pl, pi)
 
 # two crossing, one point non-overlapping
 #
@@ -302,22 +309,24 @@ def generateSegmentsNewCase5(randomRange):
 
     pu = transform_point(pu, centerOffsetX, centerOffsetY, randomRange)
 
-    print("What are the types we need?2")
-    print(type(pl[0]))
-    print(type(pl[1]))
-    print(type(pi[0]))
-    print(type(pi[1]))
-    print(type(pv[0]))
-    print(type(pv[1]))
-    print(type(pj[0]))
-    print(type(pj[1]))
-    print(type(pu[0]))
-    print(type(pu[1]))
-    # print(type(pk[0]))
-    # print(type(pk[1]))
-    print("\n\n")
+    # print("What are the types we need?2")
+    # print(type(pl[0]))
+    # print(type(pl[1]))
+    # print(type(pi[0]))
+    # print(type(pi[1]))
+    # print(type(pv[0]))
+    # print(type(pv[1]))
+    # print(type(pj[0]))
+    # print(type(pj[1]))
+    # print(type(pu[0]))
+    # print(type(pu[1]))
+    # # print(type(pk[0]))
+    # # print(type(pk[1]))
+    # print("\n\n")
 
-    return pl, pi, pv, pj, pu, pu
+    # return pl, pi, pv, pj, pu, pu
+    # return pl, pi, pu, pu, pv, pj
+    return randomize_pairs(pl, pi, pv, pj, pu, pu)
 
 
 # two crossing, one point overlapping one segment
@@ -351,7 +360,7 @@ def generateSegmentsNewCase6(randomRange):
         (1 - t1) * pl[1] + t1 * pi[1],
     ]
 
-    return pl, pi, pv, pj, pu, pu
+    return randomize_pairs(pl, pi, pv, pj, pu, pu)
 
 
 
@@ -396,7 +405,7 @@ def generateSegmentsNewCase7(randomRange):
     # print("\n\n")
 
 
-    return pl, pi, pv, pj, pu, pu
+    return randomize_pairs(pl, pi, pv, pj, pu, pu)
 
 
 # Two overlapping segments, one point
@@ -439,7 +448,7 @@ def generateSegmentsNewCase8(randomRange):
     # # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pl, pi, pv, pv
+    return randomize_pairs(pl, pi, pl, pi, pv, pv)
 
 
 
@@ -482,7 +491,7 @@ def generateSegmentsNewCase9(randomRange):
     # # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pl, pi, pu, pu
+    return randomize_pairs(pl, pi, pl, pi, pu, pu)
 
 
 # One segment, two free points
@@ -533,7 +542,7 @@ def generateSegmentsNewCase10(randomRange):
 
 
 
-    return pl, pi, pj, pj, pk, pk
+    return randomize_pairs(pl, pi, pj, pj, pk, pk)
 
 
 
@@ -585,7 +594,7 @@ def generateSegmentsNewCase11(randomRange):
     # print("\n\n")
 
 
-    return pl, pi, pj, pj, pk, pk
+    return randomize_pairs(pl, pi, pj, pj, pk, pk)
 
 
 
@@ -630,7 +639,7 @@ def generateSegmentsNewCase12(randomRange):
     # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pj, pj, pk, pk
+    return randomize_pairs(pl, pi, pj, pj, pk, pk)
 
 
 
@@ -672,7 +681,9 @@ def generateSegmentsNewCase13(randomRange):
     # # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pj, pj, pj, pj
+    return randomize_pairs(pl, pi, pj, pj, pj, pj)
+    # return pj, pj, pj, pj, pl, pi
+    # return pj, pj, pl, pi, pj, pj
 
 
 # One segment, two overlapping points, overlapping segment
@@ -714,7 +725,7 @@ def generateSegmentsNewCase14(randomRange):
     # # print(type(pk[1]))
     # print("\n\n")
 
-    return pl, pi, pj, pj, pj, pj
+    return randomize_pairs(pl, pi, pj, pj, pj, pj)
 
 
 #
@@ -757,22 +768,22 @@ def generateSegmentsNewCase15(randomRange):
 
         break
 
-    print("What are the types we need?2")
-    print(type(pl[0]))
-    print(type(pl[1]))
-    print(type(pi[0]))
-    print(type(pi[1]))
-    # print(type(pv[0]))
-    # print(type(pv[1]))
-    print(type(pj[0]))
-    print(type(pj[1]))
-    # print(type(pu[0]))
-    # print(type(pu[1]))
-    # print(type(pk[0]))
-    # print(type(pk[1]))
-    print("\n\n")
+    # print("What are the types we need?2")
+    # print(type(pl[0]))
+    # print(type(pl[1]))
+    # print(type(pi[0]))
+    # print(type(pi[1]))
+    # # print(type(pv[0]))
+    # # print(type(pv[1]))
+    # print(type(pj[0]))
+    # print(type(pj[1]))
+    # # print(type(pu[0]))
+    # # print(type(pu[1]))
+    # # print(type(pk[0]))
+    # # print(type(pk[1]))
+    # print("\n\n")
 
-    return pl, pl, pi, pi, pj, pj
+    return randomize_pairs(pl, pl, pi, pi, pj, pj)
 
 # Three colinear points
 #
@@ -796,7 +807,7 @@ def generateSegmentsNewCase16(randomRange):
         (1 - t1) * pl[1] + t1 * pi[1],
     ]
 
-    return pl, pl, pi, pi, pj, pj
+    return randomize_pairs(pl, pl, pi, pi, pj, pj)
 
 
 #
@@ -820,7 +831,7 @@ def generateSegmentsNewCase17(randomRange):
     pl = transform_point(pl, centerOffsetX, centerOffsetY, randomRange)
     pi = transform_point(pi, centerOffsetX2, centerOffsetY2, randomRange)
 
-    return pl, pl, pl, pl, pi, pi
+    return randomize_pairs(pl, pl, pl, pl, pi, pi)
 
 
 
@@ -838,6 +849,6 @@ def generateSegmentsNewCase18(randomRange):
     pl = transform_point(pl, centerOffsetX, centerOffsetY, randomRange)
 
 
-    return pl, pl, pl, pl, pl, pl
+    return randomize_pairs(pl, pl, pl, pl, pl, pl)
 
 

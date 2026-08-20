@@ -13,7 +13,7 @@ def evaluate_iteration(iteration):
     # print(f"---------------------------------------------------------- At iteration {iteration}")
     # start = time.time()
 
-    pl_r, pi_r, pv_r, pj_r, pu_r, pk_r = geometry.generateSegmentsNewCase14((1, 10000))
+    pl_r, pi_r, pv_r, pj_r, pu_r, pk_r = geometry.generateSegmentsNewCase18((1, 10000))
 
     signYapL, depthYapL = evaluation.evaluateTable(pExpressionsYapLex, pl, pi, pv, pj, pu, pk, pl_r, pi_r, pv_r, pj_r, pu_r, pk_r)
     signYapT, depthYapT = evaluation.evaluateTable(pExpressionsYapTotal, pl, pi, pv, pj, pu, pk, pl_r, pi_r, pv_r, pj_r, pu_r, pk_r)
@@ -155,3 +155,10 @@ stats.printStats(operationsSoS)
 print(f"\nHere's the histogram:")
 for key, value in depthsHistogramSoS.items():
     print(f"Depth: {key}, count: {value}")
+
+
+
+print("\n\n")
+stats.printTableRow(depthsYapL, depthsYapT, depthsSoS, operationsYapL, operationsYapT, operationsSoS)
+print("\n")
+stats.printFigCase(depthsYapL, depthsYapT, depthsSoS, operationsYapL, operationsYapT, operationsSoS)
